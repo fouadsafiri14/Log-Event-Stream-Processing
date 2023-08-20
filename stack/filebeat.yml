@@ -1,0 +1,18 @@
+filebeat.inputs:
+- type: log
+  paths:
+    - "/usr/share/filebeat/data/access_log.log"
+  fields: 
+    apache: true
+  fields_under_root: true
+
+output.kafka:
+  hosts: ["kafka:9092"]
+  topic: 'web-logs'
+  codec.format: 
+    string: '%{[@timestamp]} %{[message]}'
+  partition.round_robin:
+    reachable_only: false
+  required_acks:
+  compression: gzip
+  max_message_bytes: 1000000
